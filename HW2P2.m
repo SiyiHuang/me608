@@ -3,12 +3,12 @@
 %due to symmetry.
 
 %Set Parameters
-L = 1; % Outer Dimension of duct
-l = 0.2; % Annulus thickness
+L = 0.1; % Outer Dimension of duct
+l = 0.02; % Annulus thickness
 C = L / 2 - l; % half size of center
 mu = 1e-3; % Dynamic viscosity
-Cell1 = 10;% Cell number across the annulus
-Cell2 = 15;% Cell number across half size of center
+Cell1 = 20;% Cell number across the annulus
+Cell2 = 30;% Cell number across half size of center
 Cell = Cell1+Cell2; % Cell number across half L
 Delta_x_1 = l / Cell1; % Cell size across the annulus
 Delta_x_2 = C / Cell2; % Cell size along center block
@@ -17,7 +17,7 @@ delta_x_2 = C / Cell2; % Centroid distance along center block
 delta_x_b_1 = l / Cell1 / 2; % C Disntance at annulus boundary
 delta_x_b_2 = C / Cell2 / 2; % C D at non annulus block
 delta_x_c = (delta_x_1 + delta_x_2) / 2; % C dist at interface
-dpdx = 1e2 ; %Pressure Gradient in x dir
+dpdx = 100 ; %Pressure Gradient in x dir
 % Mesh generation
 Location_x = zeros(Cell);
 Location_y = zeros(Cell);
@@ -67,7 +67,16 @@ for i = (Cell2+1):(Cell-1)
 end
 AB2 = mu * Delta_x_1 / delta_x_b_2;
 AB1 = mu * Delta_x_1 / delta_x_b_1;
-B = dpdx * ones(Cell) * Delta_x_1 * Delta_x_1;
+B = dpdx * ones(Cell);
+for i = 1:Cell2
+    B(i,:) = B(i,:) * Delta_x_2;
+    B(:,i) = B(:,i) * Delta_x_2;
+end
+for i = (Cell2+1):Cell
+    B(i,:) = B(i,:) * Delta_x_1;
+    B(:,i) = B(:,i) * Delta_x_1;
+end
+
 AP = AE + AW + AS + AN;
 
 % Segragate Blocks and BC reset.
@@ -94,3 +103,6 @@ while max(max(abs(U-U0))) > 1e-5
     iter = iter+1;
 end
 
+% non-dimensionalize:
+D_h = 4 * (L^2 - (2*C)^2) / (4*L + 8*C);
+U_n = U * mu / (D_h^2 * dpdx);
