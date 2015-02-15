@@ -1,0 +1,121 @@
+\documentclass[a4paper,10pt]{report}
+\usepackage[utf8]{inputenc}
+
+% Title Page
+\title{ME608 Homework 2}
+\author{Shouyuan Huang}
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+\begin{document}
+\maketitle
+\section{Problem 1 TDMA and Line by line TDMA}
+
+
+For this application, TDMA and TDMA lbl are realized by MATLAB script, in TDMA.m and lblTDMA.m. 
+
+From the falsifiability, we can never verify the correctness of a code by testing it. However, two piece of testing script
+are attached to show that the solver at least does the specific problems right. A rank 5 linear algebraic equation is made
+up and comparison is made between TDMA and inv() function provided by MABLAB. A 2D heat conduction problem is set up to 
+test the lblTDMA, the solution is actually compared with the result in the heat transfer textbook by 
+Incroppera.\footnote{Incropera, Frank P. Fundamentals of heat and mass transfer. John Wiley \& Sons, 2011.}
+The validity is also "varified" through Problem 2. \footnote{Problem 2 is a 2D Poiseuille flow, whose profile can be 
+easily recognized. }
+
+The corresponding script: \emph{TDMA.m}, \emph{lblTDMA.m}, \emph{testTDMA.m}, \emph{testlblTDMA.m} are attached in Appendix.
+
+%The following piece of script is to insert a equation.
+%\newtheorem{eqn}{Equation}
+%\begin{eqn}[Diffusive Law]
+%\begin{equation}
+% \div^2 u = dp/dt
+%\end{equation}
+%\end{eqn}
+
+
+%\begin{figure}[ht]
+%ht: h indicates here, t indicates at the top of a page.
+%  \centering
+%  \includegraphics[option of size]{filename of figure}
+%  \caption{the caption here}
+%  \label{fig:filename}
+%\end{figure}
+\section{Problem 2 2D Poiseuille flow in rectangular annulus}
+
+
+The problem is implemented in MABLAB script \emph{HW2P2.m}. The solution region is chosen at the northeast quarter of the 
+crossaction. As a result of the symmetric separation, the boundary condition across the annulus is zero Neuman type.  
+This script allows to set size of the duct and thickness of the annulus. On mesh, it allows to set cell number both along 
+and across the annulus. Different mesh sizes on x and y directionare allowed, the interface is treated accordingly, but 
+smooth transition is not implemented. \footnote{This feature is not used, though implemented, because I have no idea 
+how to optimize the grid size distribution to improve the result. }
+
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=5cm]{P2_50_C.png}
+\caption{The velocity distribution at the centerline of coarse(50*50) mesh.}
+\label{P2CtrC:P2_50_C.png}
+%\end{figure}
+%\begin{figure}[ht]
+%\centering
+\includegraphics[width=5cm]{P2_125_C.png}
+\caption{The velocity distribution at the centerline of fine(125*125) mesh.}
+\label{P2CtrF:P2_125_C.png}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=5cm]{P2_50.pdf}
+\caption{The velocity distribution of coarse(50*50) mesh.}
+\label{P2meshC:P2_50.pdf}
+\end{figure}
+\begin{figure}[ht]
+\centering
+\includegraphics[width=5cm]{P2_125_.png}
+\caption{The velocity distribution of fine(125*125) mesh.}
+\label{P2meshF:P2_125_.png}
+\end{figure}
+
+
+Due to the limitation of computational resource, the mesh independency is not closely, but not completely reached. 
+The maximun grid number tried is (50+75) * (50+75). Plot at the center line (Fig \ref{P2CtrC:P2_50_C.png} and 
+\ref{P2CtrF:P2_125_C.png}), at the annulus center, as well as the mesh of overall velocity distribution (Fig 
+\ref{P2meshC:P2_50.pdf} and \ref{P2meshF:P2_125_.png}) is shown. trend is shown clearly with the plot and mesh. 
+For coarse mesh, a very noticable phenomena is that the mesh fineness highly affects how much the Dirichlet Boundary 
+Condition limits its neighbor elements. Or say, the more the mesh refined, the closer the result is to the preset 
+no slip condition.
+
+
+\section{Problem 3 Reaction Flow within duct annulus}
+
+
+For \emph{fully developed} flow, along the flow, $ \frac{\partial \theta}{\partial x} = constant $ ,in which $ \theta $ 
+is nondimensionalized temperature. For Neuman boundary all around, $ \theta $ is defined as: $ \theta = \frac{T - T_b}{T_b}$, 
+where $T_b$ is bulk temperature. Otherwise, $ \theta = \frac{T - T_b}{T_{ref} - T_b} $. This leads to $ \frac{\partial T}{\partial x} = constant $. 
+
+
+From the governing equation, i.e. Energy Eqn:
+\begin{equation}
+ \rho C_p \frac{\partial T}{\partial x} u = \nabla \cdot ( k \nabla T ) + \dot q
+\end{equation}
+When taken integral with y-z plane, the Laplacian term eliminates due to its zero-Neuman boundary condition. Thus, the result 
+shows bellow:
+\begin{equation}
+ \frac{\partial T}{\partial x} = \frac{\int_A \dot q dA}{\rho C_p \int_A u dA} = \frac{\overline{\dot q}}{\rho C_p \overline{u}}
+\end{equation}
+
+The temperature field is discretized and solved by the MATLAB script HW2P3.m. A special treatment is 
+applied to specify the location of the crossaction. The temperature at the northeast corner is 
+set constant at $ T = 100 ^\circ C $. Of course, this will not affect the result showned, which is nondimensionalized. 
+Also, the script is required to run after HW2P2.m. This is because it is using the mesh generated in and the calculation 
+result of velocity field from the latter script. 
+
+
+
+
+
+
+\end{document}          
+
+
