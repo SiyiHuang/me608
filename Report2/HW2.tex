@@ -54,34 +54,21 @@ how to optimize the grid size distribution to improve the result. }
 \begin{figure}[ht]
 \centering
 \includegraphics[width=5cm]{P2_50_C.png}
-\caption{The velocity distribution at the centerline of coarse(50*50) mesh.}
+\caption{The velocity distribution at the centerline of coarse($50\times50$) mesh.}
 \label{P2CtrC:P2_50_C.png}
 %\end{figure}
 %\begin{figure}[ht]
 %\centering
-\includegraphics[width=5cm]{P2_125_C.png}
-\caption{The velocity distribution at the centerline of fine(125*125) mesh.}
-\label{P2CtrF:P2_125_C.png}
-\end{figure}
-
-\begin{figure}[ht]
-\centering
-\includegraphics[width=5cm]{P2_50.pdf}
-\caption{The velocity distribution of coarse(50*50) mesh.}
-\label{P2meshC:P2_50.pdf}
-\end{figure}
-\begin{figure}[ht]
-\centering
-\includegraphics[width=5cm]{P2_125_.png}
-\caption{The velocity distribution of fine(125*125) mesh.}
-\label{P2meshF:P2_125_.png}
+\includegraphics[width=5cm]{P2_200_ctr.png}
+\caption{The velocity distribution at the centerline of fine($200 \times 200$) mesh.}
+\label{P2CtrF:P2_200_ctr.png}
 \end{figure}
 
 
 Due to the limitation of computational resource, the mesh independency is not closely, but not completely reached. 
-The maximun grid number tried is (50+75) * (50+75). Plot at the center line (Fig \ref{P2CtrC:P2_50_C.png} and 
-\ref{P2CtrF:P2_125_C.png}), at the annulus center, as well as the mesh of overall velocity distribution (Fig 
-\ref{P2meshC:P2_50.pdf} and \ref{P2meshF:P2_125_.png}) is shown. trend is shown clearly with the plot and mesh. 
+The maximun grid number tried is $(80+120) \times (80+120)$. Plot at the center line (Fig \ref{P2CtrC:P2_50_C.png} and 
+\ref{P2CtrF:P2_200_ctr.png}), at the annulus center, as well as the mesh of overall velocity distribution are shown in appendix.
+trend is shown clearly with the plot and mesh. 
 For coarse mesh, a very noticable phenomena is that the mesh fineness highly affects how much the Dirichlet Boundary 
 Condition limits its neighbor elements. Or say, the more the mesh refined, the closer the result is to the preset 
 no slip condition.
@@ -105,15 +92,66 @@ shows bellow:
  \frac{\partial T}{\partial x} = \frac{\int_A \dot q dA}{\rho C_p \int_A u dA} = \frac{\overline{\dot q}}{\rho C_p \overline{u}}
 \end{equation}
 
-The temperature field is discretized and solved by the MATLAB script HW2P3.m. A special treatment is 
+The temperature field is discretized and solved by the MATLAB script HW2P3.m. 
+The program with proper under-relaxation ratio will natually converge at a certain bulk temperature, but depends on the 
+choice of $\alpha$ and $\epsilon$ (convergence creterion), which is uncontrollable.A special treatment is 
 applied to specify the location of the crossaction. The temperature at the northeast corner is 
 set constant at $ T = 100 ^\circ C $. Of course, this will not affect the result showned, which is nondimensionalized. 
 Also, the script is required to run after HW2P2.m. This is because it is using the mesh generated in and the calculation 
 result of velocity field from the latter script. 
 
 
+The nondimensionalized temperature profile at the horizontal central line is shown a follows:
+\begin{figure}
+ \centering
+ \includegraphics[width = 5cm]{P3.png}
+ \caption{Nondimensionalized temperature at horizontal  line}
+\end{figure}
+
+\section{Problem 4 Discrete Equation for Radiation}
 
 
+Clearly, the radiative term should be treated as a source term. This is to say that $a_{nb}$ should be unchanged. And the 
+radiative source should be linearized, after which process, the constant term goes to $b$, the $1^st$ order term goes to
+$a_p$. 
+
+
+For uniform grid, $ \Delta x = \Delta y = \delta x = \delta y \overset{\Delta}{=} \Delta $ Thus,
+\begin{equation}
+ a_W = k;
+ a_E = k;
+ a_S = k;
+ a_N = k;
+\end{equation}
+To solve the radiation problem, we actually require iterative method with linearation of the radiative source term. 
+
+
+Define $T*$ as the temperature at p in the previous iteration, and for the first, the initial guess. then define: 
+$\Delta T = T - T* $. 
+Then by Taylor expansion($2^nd$ order terms neglected):
+
+\begin{equation}
+\begin{split}
+ \overline S &= S_C + S_P T \\
+             &= \kappa G - \kappa \sigma (T* + \Delta T)^4 \\
+             &= (\kappa G - \kappa \sigma T*^4 - 4 \kappa \sigma T*^3 \Delta T)\\
+             &= (\underbrace{\kappa G + 3\kappa \sigma T*^4}_{S_C}) + \underbrace{-4 \kappa \sigma T*^3}_{S_P} T 
+\end{split}
+\end{equation}
+
+
+
+i.e. 
+\begin{equation}
+ a_P = a_E + a_W + a_N + a_S - S_P\Delta x \Delta y = 4k + 4\kappa \sigma T*^3 \Delta^2 
+\end{equation}
+\begin{equation}
+ b = S_C \Delta x \Delta y 
+    = (\kappa G + 3\kappa \sigma T*^4)\Delta^2
+\end{equation}
+
+
+Linearization \& Disretization Done! 
 
 
 \end{document}          
