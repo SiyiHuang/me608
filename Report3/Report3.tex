@@ -1,0 +1,53 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[utf8]{inputenc}
+
+%opening
+\title{ME 60800 Assignment No. 3}
+\author{Shouyuan Huang}
+
+\usepackage{amsmath}
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This delivery of assignment will only consist of analytical derivation, necessary annotations and result to the numerical solution.
+The detailed code is written in MATLAB and will be attached as appendix.
+\end{abstract}
+
+\section{Problem 1 Unsteady Conduction with Heat Generation in 2D Domain}
+
+Assuming constant properties, the governing equations of the two regions are respectively:
+
+\begin{align}
+ \frac{\partial T}{\partial t}&=\frac{k_1}{\rho_1 C_{p,1}}\nabla^2T=\alpha_1\nabla^2T \\
+ \frac{\partial T}{\partial t}&=\frac{k_2}{\rho_2 C_{p,2}}\nabla^2T+\frac{S}{\rho_2 C_{p,2}}=\alpha_2\nabla^2T+\frac{S}{\rho_2 C_{p,2}}
+\end{align}
+
+The boundary condition at the outer boundary (\ref{BC:outer}), and at the interface (\ref{BC:interface}) goes:
+
+\begin{align}
+ \frac{\partial T}{\partial x} &= 0 \notag \\
+ \frac{\partial T}{\partial y} &= 0 \label{BC:outer} \\
+ k_1\frac{\partial T}{\partial x}|_1 - k_2\frac{\partial T}{\partial x}|_2 &= 0\notag \\
+ k_1\frac{\partial T}{\partial y}|_1 - k_2\frac{\partial T}{\partial y}|_2 &= 0\label{BC:interface}
+\end{align}
+
+Non-dimensionalize with $T^*=\frac{T-T_1}{SD_2/k_1}$, $x^*=x/D$, $y^*=y/D$, and $\tau=\alpha_1t/D^2$. 
+\begin{align}
+ \frac{\partial T^*}{\partial \tau}&=\nabla^{*2}T^* \\
+ \frac{\partial T^*}{\partial \tau}&=\frac{\alpha_2}{\alpha_1}\nabla^{*2}T^*+\frac{k_1\alpha_2}{k_2\alpha_1} 
+\end{align}
+\begin{align}
+ \frac{\partial T^*}{\partial x^*} &= 0 \notag \\
+ \frac{\partial T^*}{\partial y^*} &= 0 \label{BC:NDouter} \\
+ \frac{\partial T^*}{\partial x^*}|_1-\frac{k_2}{k_1}\frac{\partial T^*}{\partial x^*}|_2&=0 \notag \\
+ \frac{\partial T^*}{\partial y^*}|_1-\frac{k_2}{k_1}\frac{\partial T^*}{\partial y^*}|_2&=0
+\end{align}
+The governing parameters of $\alpha_1/\alpha_2$ and $k_1/k_2$ are clearly shown.
+
+
+The equations are discretized with fully-implicit time-stepping scheme into follows:
+
+
+\end{document}
