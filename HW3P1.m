@@ -18,14 +18,14 @@ k12 = 0.25; % Ratio of conductivity
 % Mesh Generation : 11*11 control volumes only. 
 % 5*5 for region 2, else for region 1.
 
-delta_t = 1e-3; % Define Time Step; Note that the estimate convergence time is 1.
+delta_t = 1e-2; % Define Time Step; Note that the estimate convergence time is 1.
 
 Loc_x = zeros(11);
 for i = 1:3
 Loc_x(:,i) = 1/24*(2*i-1);
 end
 for i = 4:8
-Loc_x(:,i) = 0.1*(2(i-3)-1) + 0.25;
+Loc_x(:,i) = 0.05*(2*(i-3)-1) + 0.25;
 end
 for i = 9:11
 Loc_x(:,i) = 1/24*(2*(i-8)-1) + .75;
@@ -46,19 +46,43 @@ AW([1:3,9:11],5:8) = 10/12;
 AW(4:8,[4,9]) = 12/11 * 2/(1+alpha12);
 AW(4:8,5:8) = 2/(1+alpha12);
 AW(4:8,[2,3,10,11]) = 1.2;
-AS = AE'
-AN = AW'
+AS = AW';
+AN = AE';
 AP0 = ones(11) /120;
 AP0([1:3,9:11],[1:3,9:11]) = 1/144;
 AP0(4:8,4:8) = 0.01;
 AP0 = AP0 / delta_t;
-AP = AE+AS+AN+AS+AP0;
+AP = AE+AW+AN+AS+AP0;
 b = zeros(11);
 b(4:8,4:8) = k12/alpha12;
 
 iter = 1;
+ITER = iter;
+Iter = 1;
 T = ones(11);
+T_c = T(6,6);
 T0 = T;
-T_old = T;
-T = lblTDMA()
+T0(1,1) = 2*T(1,1); %a random T0 to walk in the loop
+while abs(max(max(T-T0)) - min(min(T-T0)))> 1e-3
+    T0 = T;
+    T_ = 2*T; %a random T0 to walk in the loop
+while max(max(abs(T-T_))) > 1e-3
+    T_ = T;
+    T = lblTDMA(AP,AW,AE,AS,AN,T,b+AP0.*T0);
+    iter = iter + 1;
+end
+T_c = [T_c, T(6,6)];
+ITER = [ITER,iter];
+Iter = Iter + 1;
+end
+
+figure(1);
+mesh(Loc_x,Loc_y,T);
+xlabel('x');
+ylabel('y');
+zlabel('T*');
+figure(2);
+plot(delta_t*(0:Iter-1),T_c);
+xlabel('\tau');
+ylabel('T*_c');
 
