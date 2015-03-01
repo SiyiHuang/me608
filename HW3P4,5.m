@@ -15,10 +15,11 @@ T_w = 500; % Boundary Condition: Wall Temperature
 cellNum = 10; % Cell Number
 
 d_x = L / cellNum; % dist btwn Ctrs / size of cell
-dt_von = d_x^2 / 2 / alpha;
-d_t = 1 * dt_von; % Time Step
+dt_von = d_x^2 / 2 / alpha; % von Neuman Stability limit. times 2 for 
+% Crank-Nicholson Scheme. 
+d_t = 0.5 * dt_von; % Time Step
 % The multiplier is 2 and 0.5 in Problem 4, for twice von Neuman stability
-% limit and half respectively;; 10 and 1 in Problem 5 for case 1 and case 2
+% limit and half respectively;; 5 and 0.5 in Problem 5 for case 1 and case 2
 % respectively.
 f = 0.5;
 % f is set 0 in problem 4 and 0.5 in problem 5 for Explicit Scheme and
